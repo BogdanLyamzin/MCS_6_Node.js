@@ -3,8 +3,11 @@ import morgan from "morgan";
 import cors from "cors";
 import "dotenv/config";
 
+import notFoundHandler from "./middlewares/notFoundHandler.js";
+import errorHandler from "./middlewares/errorHandler.js";
+
+import validationRouter from "./routes/validationRouter.js";
 import moviesRouter from "./routes/moviesRouter.js";
-import Movie from "./db/Movie.js";
 
 const app = express();
 
@@ -12,16 +15,11 @@ app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/validation", validationRouter);
 app.use("/api/movies", moviesRouter);
 
-app.use((_, res) => {
-  res.status(404).json({ message: "Route not found" });
-});
-
-app.use((err, req, res, next) => {
-  const { status = 500, message = "Server error" } = err;
-  res.status(status).json({ message });
-});
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 const port = Number(process.env.PORT) || 3000;
 
