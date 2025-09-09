@@ -1,0 +1,1 @@
+export const movieTypes = ["film", "serial", "cartoon"];
